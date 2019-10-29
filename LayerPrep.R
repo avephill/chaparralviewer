@@ -5,6 +5,9 @@ library(shapefiles)
 ### This File, in conjunction with QGIS was used to reduce the size of source data for use in 
 ### the bokeh-heroku interactive map
 
+# load shapefiles that are useful for defining boundaries
+sierraMask <- readOGR("Source_Data/SierraMask/SierraMask.shp")
+
 # First we get the 1930s Weislander vegetation map
 shp <- readOGR('Source_Data/Wieslander_Statewide_CANAD83/Wieslander_Statewide_CANAD83.shp')
 types <- shp@data$WHR1_TYPE
@@ -14,12 +17,11 @@ csh <- shp[shp@data$WHR1_TYPE %in% utc,]
 View(csh@data)
 scsh <- csh[,c("VTM_ID","WHR1_TYPE")]
 scsh@data$WHR1_TYPE <- rep("Chaparral",length(scsh@data$WHR1_TYPE))
-writeOGR(scsh,"ChapShape",layer="ChapShape",driver="ESRI Shapefile")
+# Write the now isolated Chaparral vegetation type to a shapefile
+writeOGR(scsh,"ChapShape",layer="ChapShape",driver="ESRI Shapefile") 
 
-sierraMask <- readOGR("/Users/averyhill/Desktop/OfficePortal/Commons/SierraMask/SierraMask.shp")
-
-simp <- readOGR("/Users/averyhill/Desktop/OfficePortal/Weislander/Rhole/ChapMap/Simplify/Simplify.shp")
-shrub <- readOGR("/Users/averyhill/Desktop/OfficePortal/Weislander/Rhole/ChapMap/CA_FIA_SHRUB/CA_FIA_SHRUB.shp")
+simp <- readOGR("~/Desktop/OfficePortal/Weislander/Rhole/ChapMap/Simplify/Simplify.shp")
+shrub <- readOGR("~/Desktop/OfficePortal/Weislander/Rhole/ChapMap/CA_FIA_SHRUB/CA_FIA_SHRUB.shp")
 
 simp <- spTransform(simp,crs(sierraMask))
 simp_sierra <- simp[sierraMask,]
