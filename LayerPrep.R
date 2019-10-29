@@ -1,8 +1,12 @@
 library(rgdal)
 library(rgeos)
 library(shapefiles)
-setwd('..')
-shp <- readOGR('Data/Wieslander_Statewide_CANAD83/Wieslander_Statewide_CANAD83.shp')
+
+### This File, in conjunction with QGIS was used to reduce the size of source data for use in 
+### the bokeh-heroku interactive map
+
+# First we get the 1930s Weislander vegetation map
+shp <- readOGR('Source_Data/Wieslander_Statewide_CANAD83/Wieslander_Statewide_CANAD83.shp')
 types <- shp@data$WHR1_TYPE
 ut <- unique(types)
 utc <- as.character(ut[grep("Chaparral",ut)])
