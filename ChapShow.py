@@ -33,7 +33,7 @@ chap_1930_json = shapefile_to_json(chap_1930_shp)
 chap_1930_geosource = GeoJSONDataSource(geojson = chap_1930_json)
 
 #1990s FIA shrub_1990land
-shrub_1990_shape = gpd.read_file("Layers/1990FIA_shrub_Points/1990FIA_shrub_Points.shp")
+shrub_1990_shape = gpd.read_file("Layers/1990FIA_Shrub_Points/1990FIA_Shrub_Points.shp")
 shrub_1990_json = shapefile_to_json(shrub_1990_shape)
 shrub_1990_geosource = GeoJSONDataSource(geojson = shrub_1990_json)
 
