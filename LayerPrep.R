@@ -30,11 +30,11 @@ writeOGR(scsh,"ChapShape",layer="ChapShape",driver="ESRI Shapefile")
 ##
 
 # Read in QGIS Simplified Shapefile and trim to Sierra Nevada boundary
-simp <- readOGR("Source_Data/ChapShape_Simple/ChapShape_Simple.shp")
+simp <- readOGR("Source_Data/ChapShape/ChapShape.shp")
 simp <- spTransform(simp,crs(sierraMask))
 simp_sierra <- simp[sierraMask,]
 
-x <- spsample(simp_sierra,n=2000,type="random")
+x <- spsample(simp_sierra,n=10000,type="stratified")
 x <- SpatialPointsDataFrame(x, data.frame(ID=1:length(x)))
 writeOGR(x,"Layers/1930Weislander_Chap_Points",layer="1930Weislander_Chap_Points",driver="ESRI Shapefile")
 ####
@@ -58,10 +58,6 @@ writeOGR(shrub_sierra,"Layers/1990FIA_Shrub_Points",layer="1990FIA_Shrub_Points"
 
 ####
 # Estimated Vegetation Type https://landfire.gov/version_comparison.php
-# evt_us <- raster("~/OfficePortal/Commons/VegetationType_US/Grid/us_140evt")
-# evt_ls <- list.files("~/OfficePortal/Commons/VegetationType_US/Grid/us_140evt")
-# evt_dirs <- paste("~/OfficePortal/Commons/VegetationType_US/Grid/us_140evt/",evt_ls,sep="")
-# ca_crs <- spTransform(ca,crs(raster(evt_dirs[1])))
 
 metadata <- read.csv("~/OfficePortal/Commons/evt_US/CSV_Data/LF_140EVT_09152016.csv",stringsAsFactors = F)
 chap_values <- metadata[grep("Chaparral",metadata$CLASSNAME),"VALUE"]
@@ -69,7 +65,6 @@ chap_values <- metadata[grep("Chaparral",metadata$CLASSNAME),"VALUE"]
 r_sierra <- raster("~/OfficePortal/Commons/evt_sierra.tif")
 raster::plot(r_sierra)
 
-#if there isn't enough memory to do this:
 evt_chap <- r_sierra
 values(evt_chap)[!(values(evt_chap) %in% chap_values)] <- NA
 evt_chap_bin <- evt_chap #has multiple chaparral values
@@ -80,72 +75,10 @@ writeRaster(evt_chap_bin,"evt_chap.tif")
 evt_chap_bin <- raster("evt_chap.tif")
 evt_pts <- rasterToPoints(evt_chap_bin,spatial=T)
 evt_pts <- spTransform(evt_pts,crs(idcrs))
-evt_pts_smp <- evt_pts[sample(nrow(evt_pts),4000),]
+evt_pts_smp <- evt_pts[sample(nrow(evt_pts),10000),]
 sp::plot(evt_pts_smp,add=T)
 evt_pts_smp_sierra <- evt_pts_smp[sierraMask,]
 writeOGR(evt_pts_smp_sierra,"Layers/2014Landfire_Chap",layer="2014Landfire_Chap",driver="ESRI Shapefile")
-evt_pts_smp <- readOGR("Layers/2014Landfire_Chap/2014Landfire_Chap.shp")
-
-
-evt_chap_f5 <- raster::aggregate(evt_chap_bin,fact=5)
-evt_pts_f5 <- rasterToPoints(evt_chap_f5,spatial=T)
-evt_poly_f5 <- rasterToPolygons(evt_chap_f5,dissolve=T,na.rm=T)
-evt_samp_f5 <- spsample(evt_poly_f5,n=4000,type="stratified")
-plot(evt_chap_f5)
-plot(evt_shp_f5,pch=16,cex=.1,add=T)
-
-
-evt_chap_f10 <- raster::aggregate(evt_chap_bin,fact=10)
-raster::plot(evt_chap_f10)
-evt_chap_poly <- rasterToPolygons(evt_chap_f10,dissolve=T)
-sp::plot(evt_chap_poly)
-
-evt_chap_shp <- rasterToPolygons(evt_chap_f5,dissolve=T)
-writeOGR(evt_chap_poly,"Layers/EVT_Chap",layer="EVT_Chap",driver="ESRI Shapefile")
-
-lr <- readOGR("Layers/EVT_Chap/EVT_Chap.shp")
-plot(evt_chap_f10)
-plot(evt_shp,add=T)
-
-
-evt_shp <- rasterToPolygons(evt_chap_f10,dissolve=T,na.rm=T) #needs 3 Gb vector
-evt_shp <- rasterToPoints(evt_chap_bin,spatial=T)
-raster::plot(evt_shp)
-
-
-
-evt_chap_top <- r_sierra_top
-values(evt_chap_top)[!(values(evt_chap_top) %in% chap_values)] <- NA
-
-evt_chap_bot <- r_sierra_bot
-values(evt_chap_bot)[!(values(evt_chap_bot) %in% chap_values)] <- NA
-
-raster::plot(evt_chap)
-
-# for( i in 1:length(evt_dirs)){
-#   print(i)
-#   r <- raster(evt_dirs[i])
-#   r_ca <- crop(r,extent(ca_crs))
-#   r_ca_idcrs <- projectRaster(r_ca,crs=idcrs)
-#   writeRaster(r_ca,paste("~/OfficePortal/Commons/VegetationType_CA/",evt_ls[i],sep=""))
-#   
-# }
-
-
-
-evt_ca <- crop(evt_us,extent(ca_crs))
-
-evt_ca <- projectRaster(evt_ca,crs=idcrs)
-
-
-
-
-
-
-
-evt_chap_simp <- raster::aggregate(evt_chap,fact=5)
-evt_chap_shp <- rasterToPolygons(evt_chap_simp,dissolve=T)
-writeOGR(evt_chap_shp,"Layers/EVT_Chap",layer="EVT_Chap",driver="ESRI Shapefile")
 
 ####
 

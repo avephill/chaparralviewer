@@ -1,4 +1,7 @@
 .DS_Store
 .Rproj.user
 .Rhistory
-Source_Data/*
+#Source_Data/CA/*
+Source_Data/CA_Alt.asc
+Source_Data/d_MAT.nc
+Source_Data/Wieslander_Statewide_CANAD83/*

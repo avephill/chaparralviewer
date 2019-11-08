@@ -183,7 +183,7 @@ p.triangle('x','y',source=chap_1930_geosource,color="orange",size=4,legend="1930
 p.circle('x','y', source = shrub_1990_geosource,
               color = 'black', size=4,legend="1990s shrubland")
 
-p.circle('x','y', source = landfire_geosource,
+p.square('x','y', source = landfire_geosource,
               color = 'brown', size=4,legend="Landfire Chaparral")
 
 p.multi_line('xs','ys', source = ca_geosource,color="black")
