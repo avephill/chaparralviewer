@@ -37,6 +37,11 @@ shrub_1990_shape = gpd.read_file("Layers/1990FIA_Shrub_Points/1990FIA_Shrub_Poin
 shrub_1990_json = shapefile_to_json(shrub_1990_shape)
 shrub_1990_geosource = GeoJSONDataSource(geojson = shrub_1990_json)
 
+#LANDFIRE Chaparral
+landfire_shape = gpd.read_file("Layers/2014Landfire_Chap/2014Landfire_Chap.shp")
+landfire_json = shapefile_to_json(landfire_shape)
+landfire_geosource = GeoJSONDataSource(geojson = landfire_json)
+
 # dMAT background layer
 dMAT_shp = gpd.read_file("Layers/dMAT_CA/dMAT_CA.shp")
 dMAT_json = shapefile_to_json(dMAT_shp)
@@ -72,7 +77,7 @@ blank_json_data_dmat = json.dumps(blank_json_dmat)
 ### When an element is selected, it passes all current selections to this 
 ### function, compares it to the old list of selected elements, and selectively
 ### enables/disables layers on the map
-checkbox_labels = ["Altitude","ΔMAT","1930s Chaparral","1990s Shrubland"]
+checkbox_labels = ["Altitude","ΔMAT","1930s Chaparral","1990s Shrubland","Landfire Chaparral"]
 
 old_list = []
 def checkbox_handler(new):
@@ -113,6 +118,11 @@ def checkbox_handler(new):
         shrub_1990_geosource.geojson = shrub_1990_json
     elif "1990s Shrubland" in remove_this:
         shrub_1990_geosource.geojson = blank_json_data
+
+    if "Landfire Chaparral" in add_this:
+        landfire_geosource.geojson = landfire_json
+    elif "Landfire Chaparral" in remove_this:
+        landfire_geosource.geojson = blank_json_data
         
     old_list = new_list
 
@@ -122,6 +132,7 @@ alt_geosource.geojson = blank_json_data
 dMAT_geosource.geojson = blank_json_data_dmat #because of the color fill, it's important to have the own blank here
 chap_1930_geosource.geojson = blank_json_data
 shrub_1990_geosource.geojson = blank_json_data
+landfire_geosource.geojson = blank_json_data
 
 
 
@@ -171,6 +182,9 @@ p.triangle('x','y',source=chap_1930_geosource,color="orange",size=4,legend="1930
 
 p.circle('x','y', source = shrub_1990_geosource,
               color = 'black', size=4,legend="1990s shrubland")
+
+p.circle('x','y', source = landfire_geosource,
+              color = 'brown', size=4,legend="Landfire Chaparral")
 
 p.multi_line('xs','ys', source = ca_geosource,color="black")
 
