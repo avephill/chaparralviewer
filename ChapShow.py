@@ -32,10 +32,10 @@ chap_1930_shp = gpd.read_file("Layers/1930Weislander_Chap_Points/1930Weislander_
 chap_1930_json = shapefile_to_json(chap_1930_shp)
 chap_1930_geosource = GeoJSONDataSource(geojson = chap_1930_json)
 
-#1990s FIA shrub_1990land
-shrub_1990_shape = gpd.read_file("Layers/1990FIA_Shrub_Points/1990FIA_Shrub_Points.shp")
-shrub_1990_json = shapefile_to_json(shrub_1990_shape)
-shrub_1990_geosource = GeoJSONDataSource(geojson = shrub_1990_json)
+# #1990s FIA shrub_1990land
+# shrub_1990_shape = gpd.read_file("Layers/1990FIA_Shrub_Points/1990FIA_Shrub_Points.shp")
+# shrub_1990_json = shapefile_to_json(shrub_1990_shape)
+# shrub_1990_geosource = GeoJSONDataSource(geojson = shrub_1990_json)
 
 #LANDFIRE Chaparral
 landfire_shape = gpd.read_file("Layers/2014Landfire_Chap/2014Landfire_Chap.shp")
@@ -77,7 +77,7 @@ blank_json_data_dmat = json.dumps(blank_json_dmat)
 ### When an element is selected, it passes all current selections to this 
 ### function, compares it to the old list of selected elements, and selectively
 ### enables/disables layers on the map
-checkbox_labels = ["Altitude","ΔMAT","1930s Chaparral","1990s Shrubland","Landfire Chaparral"]
+checkbox_labels = ["Altitude","ΔMAT","1930s Chaparral","2010s Chaparral"]
 
 old_list = []
 def checkbox_handler(new):
@@ -114,14 +114,14 @@ def checkbox_handler(new):
     elif "1930s Chaparral" in remove_this:
         chap_1930_geosource.geojson = blank_json_data
         
-    if "1990s Shrubland" in add_this:
-        shrub_1990_geosource.geojson = shrub_1990_json
-    elif "1990s Shrubland" in remove_this:
-        shrub_1990_geosource.geojson = blank_json_data
+    # if "1990s Shrubland" in add_this:
+    #     shrub_1990_geosource.geojson = shrub_1990_json
+    # elif "1990s Shrubland" in remove_this:
+    #     shrub_1990_geosource.geojson = blank_json_data
 
-    if "Landfire Chaparral" in add_this:
+    if "2010s Chaparral" in add_this:
         landfire_geosource.geojson = landfire_json
-    elif "Landfire Chaparral" in remove_this:
+    elif "2010s Chaparral" in remove_this:
         landfire_geosource.geojson = blank_json_data
         
     old_list = new_list
@@ -131,7 +131,7 @@ def checkbox_handler(new):
 alt_geosource.geojson = blank_json_data
 dMAT_geosource.geojson = blank_json_data_dmat #because of the color fill, it's important to have the own blank here
 chap_1930_geosource.geojson = blank_json_data
-shrub_1990_geosource.geojson = blank_json_data
+# shrub_1990_geosource.geojson = blank_json_data
 landfire_geosource.geojson = blank_json_data
 
 
@@ -180,8 +180,8 @@ p.patches('xs','ys', source = dMAT_geosource,
 
 p.triangle('x','y',source=chap_1930_geosource,color="orange",size=4,legend="1930s Chaparral")
 
-p.circle('x','y', source = shrub_1990_geosource,
-              color = 'black', size=4,legend="1990s shrubland")
+# p.circle('x','y', source = shrub_1990_geosource,
+              # color = 'black', size=4,legend="1990s shrubland")
 
 p.square('x','y', source = landfire_geosource,
               color = 'brown', size=4,legend="Landfire Chaparral")
