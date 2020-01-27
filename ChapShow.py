@@ -190,7 +190,7 @@ p.multi_line('xs','ys', source = ca_geosource,color="black")
 
 
 # Add the CheckBox group
-Check_Box = CheckboxButtonGroup(labels=checkbox_labels, active=[])
+Check_Box = CheckboxButtonGroup(title= "Select layers",labels=checkbox_labels, active=[])
 Check_Box.on_click(checkbox_handler)
 
 # Position the color bars
